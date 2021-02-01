@@ -7,6 +7,7 @@ This project builds the docker image which includes tools:
     * swagger ([github.com/go-swagger/go-swagger][go-swagger])
     * protoc ([protobuf:v3.13.0][protobuf]) - from [Alpine's repository][alpine-protobuf].
     * protoc-gen-go ([github.com/golang/protobuf][proto-gen-go])
+    * protoc-gen-go-grpc (https://github.com/grpc/grpc-go)
     * proto-gen-grpc-gateway ([github.com/grpc-ecosystem/grpc-gateway][grpc-gateway])
     * proto-gen-swagger ([github.com/grpc-ecosystem/grpc-gateway][grpc-gateway])
 
