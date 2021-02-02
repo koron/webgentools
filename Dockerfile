@@ -16,6 +16,7 @@ RUN apk add --no-cache \
 COPY --from=build-env \
 	/go/bin/swagger \
 	/go/bin/protoc-gen-go \
+	/go/bin/protoc-gen-go-grpc \
 	/go/bin/protoc-gen-grpc-gateway \
 	/go/bin/protoc-gen-swagger \
 	/usr/local/bin/
