@@ -1,6 +1,6 @@
 FROM golang:1.16rc1-alpine3.13 AS build-env
 ENV GO111MODULE=on
-RUN go install github.com/go-swagger/go-swagger/cmd/swagger@v0.26.0
+RUN go install github.com/go-swagger/go-swagger/cmd/swagger@v0.25.0
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.25.0
 RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0
 RUN go install \
