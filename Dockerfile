@@ -14,6 +14,7 @@ RUN go install \
 	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v2.3.0
 
 FROM debian:buster-20210408-slim
+RUN mkdir -p /root/go
 RUN apt update -y && \
 	apt install -y --no-install-recommends \
           make && \
