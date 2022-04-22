@@ -1,0 +1,23 @@
+name: Docker
+
+on:
+  push:
+    branches:
+    - '*'
+  pull_request:
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v2
+
+    - name: build an image
+      run: docker build -t ghcr.io/${{github.repository}}:latest .
+
+    - name: list images
+      run: docker image ls
