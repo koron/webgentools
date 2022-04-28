@@ -4,6 +4,8 @@ on:
   push:
     branches:
     - '*'
+    tags:
+    - '*'
   pull_request:
 
 jobs:
@@ -16,13 +18,14 @@ jobs:
     - name: Checkout source
       uses: actions/checkout@v2
 
-    - name: build an image
-      run: docker build -t ghcr.io/${{github.repository}}:latest .
+    - name: build the image
+      run: docker build -t ghcr.io/${{github.repository}}:${{github.ref_name}} .
 
     - name: list images
       run: docker image ls
 
-    - name: push an image
+    - name: push the image
+      if: github.ref_type == 'tag'
       run: |
-        echo ${{secrets.GITHUB_TOKEN}} | docker login ghcr.io -u ${{github.actor}} --password-stdin
-        docker push ghcr.io/${{github.repository}}:latest
+        docker login ghcr.io -u ${{github.actor}} --password-stdin <<< "${{secrets.GITHUB_TOKEN}}"
+        docker push ghcr.io/${{github.repository}}:${{github.ref_name}}
