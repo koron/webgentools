@@ -20,6 +20,10 @@ RUN go install \
 	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@${GRPCGW_VER}
 RUN go install github.com/bronze1man/json2yaml@${JSON2YAML_VER}
 
+FROM debian:bullseye-20220822-slim AS go-extract
+ADD https://go.dev/dl/go1.19.linux-amd64.tar.gz /opt/go.tar.gz
+RUN cd /opt && tar xzf go.tar.gz && rm -f go.tar.gz
+
 FROM debian:bullseye-20220822-slim
 RUN mkdir -p /root/go
 RUN apt update -y && \
@@ -39,3 +43,5 @@ COPY --from=build-env \
 COPY --from=build-env \
 	/go/include \
 	/usr/local/include
+COPY --from=go-extract /opt/go /opt/go
+ENV PATH $PATH:/opt/go/bin
