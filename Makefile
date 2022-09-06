@@ -1,5 +1,5 @@
 NAME=koron/webgentools
-TAG=$(shell git describe)
+TAG?=$(shell git describe --candidate=0)
 
 build:
 	docker build -t $(NAME):latest .
@@ -14,7 +14,7 @@ push-tag:
 	docker push $(NAME):$(TAG)
 
 release:
-	docker build -t $(NAME):latest .
-	docker tag $(NAME):latest $(NAME):$(TAG)
+	docker build -t $(NAME):$(TAG) .
 	docker push $(NAME):$(TAG)
+	docker tag $(NAME):$(TAG) $(NAME):latest
 	docker push $(NAME):latest
