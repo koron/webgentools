@@ -2,16 +2,16 @@ NAME=koron/webgentools
 TAG?=$(shell git describe --candidate=0)
 
 build:
-	docker build -t $(NAME):latest .
+	docker buildx build --platform=linux/amd64,linux/arm64 -t $(NAME):latest .
 
 build-tag:
-	docker build -t $(NAME):$(TAG) .
+	docker buildx build --platform=linux/amd64,linux/arm64 -t $(NAME):$(TAG) .
 
 push:
-	docker push $(NAME):latest
+	docker buildx build --platform=linux/amd64,linux/arm64 -t $(NAME):latest --push .
 
 push-tag:
-	docker push $(NAME):$(TAG)
+	docker buildx build --platform=linux/amd64,linux/arm64 -t $(NAME):$(TAG) --push .
 
 release:
 	docker build -t $(NAME):$(TAG) .

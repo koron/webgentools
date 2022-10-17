@@ -20,7 +20,7 @@ This project builds the docker image which includes tools:
 ## How to pull latest image
 
 ```console
-$ docker pull ghcr.io/koron/webgentools:3.0.0
+$ docker pull ghcr.io/koron/webgentools:4.0.0
 ```
 
 ## How to build and release
@@ -28,18 +28,14 @@ $ docker pull ghcr.io/koron/webgentools:3.0.0
 Build:
 
 ```console
-# Just build
-$ docker build .
-
-# build with name
-$ docker build -t koron/webgentools .
+# Build with name "koron/webgentools:latest"
+$ make build
 ```
 
 Release:
 
-```console
-$ docker build -t koron/webgentools:{tag} .
-
-# Release to https://hub.docker.com/r/koron/webgentools
-$ docker push koron/webgentools:{tag}
-```
+*   release by tags
+    1. create a tag to release
+    2. push the tag
+*   release as "latest"
+    1. push to "main" branch
