@@ -1,0 +1,133 @@
+name: Docker - GitHub Container Registry
+
+
+on:
+  push:
+    branches:
+    - main
+    tags:
+    - '*'
+  pull_request:
+
+
+env:
+  REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
+
+  PUSH_LATEST: ${{ github.ref_type == 'branch' && github.ref_name == 'main' }}
+  PUSH_TAG: ${{ github.ref_type == 'tag' }}
+
+
+jobs:
+
+  # Based on https://zenn.dev/cybozu_ept/articles/build-multi-platform-image-with-arm64-runner
+
+  build:
+    name: Build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - key: linux-amd64
+          platform: linux/amd64
+          runner: ubuntu-24.04
+        - key: linux-arm64
+          platform: linux/arm64
+          runner: ubuntu-24.04-arm
+
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+
+    - name: Checkout source
+      uses: actions/checkout@v4
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY_IMAGE }}
+
+    - name: Set up Docker BuildX
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to GitHub container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push by digest
+      id: build
+      uses: docker/build-push-action@v6
+      env:
+        PUSH: ${{ env.PUSH_LATEST == 'true' || env.PUSH_TAG == 'true' }}
+      with:
+        context: .
+        platforms: ${{ matrix.platforms }}
+        labels: ${{ steps.meta.outputs.labels }}
+        outputs: type=image,name=${{ env.REGISTRY_IMAGE }},name-canonical=true,push-by-digest=true,push=${{ env.PUSH }}
+
+    - name: Export digest
+      run: |
+        mkdir -p /tmp/digests
+        digest="${{ steps.build.outputs.digest }}"
+        touch "/tmp/digests/${digest#sha256:}"
+
+    - name: Upload digest
+      uses: actions/upload-artifact@v4
+      with:
+        name: digest-${{ matrix.key }}
+        path: /tmp/digests/*
+        if-no-files-found: error
+        retention-days: 1
+
+  merge:
+    name: Merge
+    runs-on: ubuntu-24.04
+    needs:
+    - build
+    steps:
+
+    - name: Download digests
+      uses: actions/download-artifact@v4
+      with:
+        path: /tmp/digests
+        pattern: digest-*
+        merge-multiple: true
+
+    - name: List digests
+      run: ls -l /tmp/digests
+
+    - name: Set up Docker BuildX
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to GitHub container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create and push "latest" manifest list
+      if: ${{ env.PUSH_LATEST == 'true' }}
+      working-directory: /tmp/digests
+      run: |
+        docker buildx imagetools create -t ${{ env.REGISTRY_IMAGE }}:latest $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+    - name: Inspect "latest" image
+      if: ${{ env.PUSH_LATEST == 'true' }}
+      run: |
+        docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:latest
+
+    - name: Create and push a tag's manifest list
+      if: ${{ env.PUSH_TAG == 'true' }}
+      working-directory: /tmp/digests
+      run: |
+        docker buildx imagetools create -t ${{ env.REGISTRY_IMAGE }}:${{ github.ref_name }} $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+    - name: Inspect and push a tag's image
+      if: ${{ env.PUSH_TAG == 'true' }}
+      run: |
+        docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ github.ref_name }}
