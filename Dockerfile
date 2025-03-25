@@ -1,12 +1,12 @@
-ARG PROTOC_VER="21.5"
-ARG GRPCGW_VER="2.11.3"
+ARG PROTOC_VER="30.1"
+ARG GRPCGW_VER="2.26.3"
 
 FROM golang:1.24.1-bullseye AS build-env
 ARG GRPCGW_VER
-RUN go install golang.org/x/tools/cmd/goimports@v0.1.12
-RUN go install github.com/go-swagger/go-swagger/cmd/swagger@v0.30.2
-RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
-RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
+RUN go install golang.org/x/tools/cmd/goimports@v0.31.0
+RUN go install github.com/go-swagger/go-swagger/cmd/swagger@v0.31.0
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6
+RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.5.1
 RUN go install \
 	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@v${GRPCGW_VER} \
 	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v${GRPCGW_VER}
