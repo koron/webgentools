@@ -75,7 +75,7 @@ jobs:
 
     - name: Push a tag to Docker Hub
       if: env.DOCKERHUB_ENABLED == 'true' && env.DOCKERHUB_REPOSITORY != '' && env.PUSH_TAG == 'true'
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v6
       with:
         context: .
         file: Dockerfile
