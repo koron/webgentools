@@ -20,7 +20,7 @@ This project builds the docker image which includes tools:
 ## How to pull latest image
 
 ```console
-$ docker pull ghcr.io/koron/webgentools:5.0.0
+$ docker pull ghcr.io/koron/webgentools:5.0.1
 ```
 
 ## How to build and release
