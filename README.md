@@ -2,7 +2,7 @@
 
 This project builds the docker image which includes tools:
 
-* OS: Debian bullseye slim (20250317)
+* OS: Debian bookworm slim (20251020)
 * Tools:
     * swagger ([github.com/go-swagger/go-swagger][go-swagger])
     * protoc ([protobuf:v30.1][protobuf]) - from [protobuf/releases][protobuf-releases]
@@ -19,23 +19,22 @@ This project builds the docker image which includes tools:
 
 ## How to pull latest image
 
+from GHCR
+
 ```console
-$ docker pull ghcr.io/koron/webgentools:5.0.1
+$ docker pull ghcr.io/koron/webgentools:5.1.0
 ```
+
+or Docker Hub
+
+$ docker pull koron/webgentools:5.1.0
 
 ## How to build and release
 
-Build:
+Build with a `latest` tag:
 
 ```console
-# Build with name "koron/webgentools:latest"
-$ make build
+$ docker build -t koron/webgentools:latest .
 ```
 
-Release:
-
-*   release by tags
-    1. create a tag to release
-    2. push the tag
-*   release as "latest"
-    1. push to "main" branch
+Release is pushing a tag to github.
