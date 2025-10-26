@@ -1,10 +1,10 @@
 ARG PROTOC_VER="30.1"
 ARG GRPCGW_VER="2.26.3"
 
-FROM golang:1.24.9-bookworm AS build-env
+FROM golang:1.25.3-bookworm AS build-env
 ARG GRPCGW_VER
-RUN go install golang.org/x/tools/cmd/goimports@v0.31.0
-RUN go install github.com/go-swagger/go-swagger/cmd/swagger@v0.31.0
+RUN go install golang.org/x/tools/cmd/goimports@v0.38.0
+RUN go install github.com/go-swagger/go-swagger/cmd/swagger@v0.33.1
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6
 RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.5.1
 RUN go install \
