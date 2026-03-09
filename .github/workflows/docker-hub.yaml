@@ -59,7 +59,7 @@ jobs:
 
     - name: Build and push by digest
       id: build
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       env:
         PUSH: ${{ env.PUSH_LATEST == 'true' || env.PUSH_TAG == 'true' }}
       with:
